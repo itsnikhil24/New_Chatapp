@@ -1,8 +1,13 @@
-const express=require("express");
-const usercontroller=require("../controllers/usercontrollers");
-const router=express.Router();
+const express = require("express");
+const usercontroller = require("../controllers/usercontrollers");
+const router = express.Router();
+const multer = require("multer");
 
-router.get("/",usercontroller.hello);
-router.get("/checkcookie",usercontroller.checkcookie);
+const upload = multer({ storage: multer.memoryStorage() }); // Move upload middleware here
 
-module.exports=router;
+router.get("/", usercontroller.hello);
+router.get("/checkcookie", usercontroller.checkcookie);
+router.get("/register", usercontroller.registerpage);
+router.post("/register", upload.single("profile_pic"), usercontroller.createUser); // Use multer middleware
+
+module.exports = router;
