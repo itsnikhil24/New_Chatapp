@@ -1,6 +1,7 @@
 const user = require('../models/usermodel'); // Adjust the path as necessary
 const bcrypt = require('bcrypt');
 const cloudinary = require('cloudinary').v2;
+var jwt = require('jsonwebtoken');
 
 exports.hello = function (req, res) {
     res.cookie("password", "123");
@@ -15,6 +16,9 @@ exports.checkcookie = (req, res) => {
 
 exports.registerpage=(req,res)=>{
     res.render("register.ejs");
+}
+exports.loginpage=(req,res)=>{
+    res.render("login.ejs");
 }
 
 exports.createUser = async (req, res) => {
@@ -74,4 +78,44 @@ exports.upload = (fileBuffer) => {
     });
 };
 
+exports.login = async (req, res) => {
+    try {
+     
+  
+   
+      const userfind = await user.findOne({ username: req.body.username });
+      if (!userfind) {
+        return res.status(400).send("User not found");
+      }
+  
+    
+      const isPasswordMatch = await bcrypt.compare(req.body.password, userfind.password);
+      if (!isPasswordMatch) {
+        return res.status(400).send("Incorrect Password");
+      }
+  
+ 
+      const token = jwt.sign({ username: userfind.username, id: userfind._id }, "secretKey", { expiresIn: "1h" });
+  
 
+      res.cookie("token", token, { httpOnly: true, secure: true, maxAge: 3600000 }); // Secure cookies are recommended in production
+  
+      // Redirect the user or send a success response
+      return res.status(200).redirect("/dashboard"); // Change "/dashboard" to your desired redirect path
+    } catch (error) {
+      console.error("Error during login:", error);
+      return res.status(500).send("An internal error occurred");
+    }
+  };
+  exports.logout = (req, res) => {
+    try {
+      // Clear the authentication cookie
+      res.clearCookie("token", { httpOnly: true, secure: true });
+  
+      // Redirect the user to the login page or home page
+      return res.status(200).redirect("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      return res.status(500).send("An error occurred during logout");
+    }
+  };
