@@ -11,7 +11,7 @@ const multer = require("multer");
 require("dotenv").config();
 const upload = multer({ storage: multer.memoryStorage() }); // Memory storage for file uploads
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
@@ -30,6 +30,7 @@ app.use(cookieParser());
 app.use(express.json()); // Parse JSON
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
 app.use(userroutes); // Routes (ensure this is after middleware)
+app.use(express.static('public'))
 
 app.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);

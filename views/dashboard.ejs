@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0px;
+      padding: 0px;
+    }
+    body {
+      display: flex;
+      flex-direction: row;
+    }
+    .leftcontainer {
+      background-color: antiquewhite;
+      width: 30%;
+      height: 100%;
+    }
+    .rightcontainer {
+      background-color: aquamarine;
+      width: 70%;
+      width: 100%;
+    }
+      /* Sidebar styles */
+      .sidebar {
+            width: 130px;
+            height: 100vh;
+            background-color: #333;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu a {
+            padding: 15px 20px;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid #444;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #575757;
+        }
+
+        .logout {
+            padding: 15px 20px;
+            text-align: center;
+            color: white;
+            border-top: 1px solid #444;
+            background-color: #444;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout:hover {
+            background-color: #575757;
+        }
+
+        /* Content */
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+        }
+  </style>
+  <body>
+    <div class="leftcontainer">
+        <div class="sidebar">
+            <div class="menu">
+                <a href="#home">Home</a>
+                <a href="#explore">Explore</a>
+                <a href="#chat">Chat</a>
+                <a href="#profile">Profile</a>
+            </div>
+            <div class="logout">
+                Logout
+            </div>
+        </div>
+    </div>
+    <div class="rightcontainer">
+        <div class="navbar"></div>
+    </div>
+  </body>
+</html>

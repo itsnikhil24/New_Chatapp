@@ -20,6 +20,9 @@ exports.registerpage=(req,res)=>{
 exports.loginpage=(req,res)=>{
     res.render("login.ejs");
 }
+exports.dashboard=(req,res)=>{
+    res.render("dashboard.ejs");
+}
 
 exports.createUser = async (req, res) => {
     try {
