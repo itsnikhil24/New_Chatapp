@@ -2,6 +2,8 @@ const user = require('../models/usermodel'); // Adjust the path as necessary
 const bcrypt = require('bcrypt');
 const cloudinary = require('cloudinary').v2;
 var jwt = require('jsonwebtoken');
+const chatmodel = require('../models/chatmodel');
+
 
 exports.hello = function (req, res) {
     res.cookie("password", "123");
@@ -20,8 +22,18 @@ exports.registerpage=(req,res)=>{
 exports.loginpage=(req,res)=>{
     res.render("login.ejs");
 }
-exports.dashboard=(req,res)=>{
-    res.render("dashboard.ejs");
+exports.dashboard=async (req,res)=>{
+    const token=req.cookies.token;
+    const decoded = jwt.verify(token, "secretKey"); // Verify the token
+    const user =decoded.id;
+    const username =decoded.username;
+    console.log(user);
+    console.log(username);
+
+    const chats = await chatmodel.find({ senderId: user }).populate();
+  console.log(chats);
+    res.render("dashboard.ejs",chats); // Render dashboard
+    
 }
 
 exports.createUser = async (req, res) => {

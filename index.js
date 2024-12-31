@@ -1,8 +1,12 @@
 const express = require("express");
+const {Server}=require("socket.io");
+const http=require("http");
 const app = express();
+const server = http.createServer(app);
 const PORT = 3000;
 
 // Dependencies
+const io = new Server(server);
 const userroutes = require("./routes/userroutes");
 const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser");
@@ -32,6 +36,6 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
 app.use(userroutes); // Routes (ensure this is after middleware)
 app.use(express.static('public'))
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);
 });
