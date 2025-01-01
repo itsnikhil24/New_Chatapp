@@ -122,6 +122,27 @@ exports.login = async (req, res) => {
       return res.status(500).send("An internal error occurred");
     }
   };
+  exports.explore = async (req, res) => {
+    try {
+      const token = req.cookies.token;
+      if (!token) {
+        return res.status(401).send("Unauthorized: No token provided");
+      }
+  
+      const decoded = jwt.verify(token, "secretKey");
+      const userId = decoded.id;
+  
+      // Find all users except the logged-in user
+      const users = await user.find({ _id: { $ne: userId } });
+  
+      // Pass the users to the explore.ejs template
+      res.render("explore.ejs", { users });
+    } catch (error) {
+      console.error("Error in explore route:", error.message);
+      res.status(500).send("Internal Server Error");
+    }
+  };
+  
   exports.logout = (req, res) => {
     try {
       // Clear the authentication cookie

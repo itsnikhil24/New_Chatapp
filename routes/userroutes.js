@@ -13,5 +13,6 @@ router.post("/register", upload.single("profile_pic"), usercontroller.createUser
 router.post("/login", usercontroller.login); // Use multer middleware
 router.get("/logout",usercontroller.logout);
 router.get("/dashboard",usercontroller.dashboard);
+router.get("/explore",usercontroller.explore);
 
 module.exports = router;
