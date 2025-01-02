@@ -14,5 +14,6 @@ router.post("/login", usercontroller.login); // Use multer middleware
 router.get("/logout",usercontroller.logout);
 router.get("/dashboard",usercontroller.dashboard);
 router.get("/explore",usercontroller.explore);
+router.get("/chat/:id/:logineduserId",usercontroller.chat);
 
 module.exports = router;

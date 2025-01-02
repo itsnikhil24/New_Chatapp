@@ -136,7 +136,7 @@ exports.login = async (req, res) => {
       const users = await user.find({ _id: { $ne: userId } });
   
       // Pass the users to the explore.ejs template
-      res.render("explore.ejs", { users });
+      res.render("explore.ejs", { users,userId });
     } catch (error) {
       console.error("Error in explore route:", error.message);
       res.status(500).send("Internal Server Error");
@@ -155,3 +155,27 @@ exports.login = async (req, res) => {
       return res.status(500).send("An error occurred during logout");
     }
   };
+  exports.chat=async (req,res)=>{
+    const { sender, receiver } = req.params;
+    let chat = await ChatModel.findOne({
+      $or: [
+          { sender: sender, receiver: receiver },
+          { sender: receiver, receiver: sender }, // For bi-directional chats
+      ],
+  });
+  if (!chat) {
+    if (!chat) {
+      chat = new ChatModel({
+          sender: sender,
+          receiver: receiver,
+          messages: [], // Initialize with an empty messages array
+      });
+
+      await chat.save(); // Save the new chat to the database
+  }
+   
+}
+   
+
+
+  }
