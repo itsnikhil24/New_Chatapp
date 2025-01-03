@@ -36,12 +36,11 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
 app.use(userroutes); // Routes (ensure this is after middleware)
 app.use(express.static('public'))
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
 });
+
 
 server.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);

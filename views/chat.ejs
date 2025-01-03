@@ -1,15 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    
-</body>
-<script src="/socket.io/socket.io.js"></script>
-<script>
+  </head>
+  <body>
+    <div class="left-div">
+      <a href="#home">Home</a>
+      <a href="/explore">Explore</a>
+      <a href="#chat">Chat</a>
+      <a href="#profile">Profile</a>
+    </div>
+    <div class="right-div">
+      <h1>ChatApp</h1>
+      <nav id="nav-bar">
+        <img src="" alt="" />
+        <h2>Name</h2>
+      </nav>
+      <div class="chatarea">
+        <form id="message_form">
+          <input id="message" type="text" />
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+    </div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
     const socket = io();
+    const form = document.getElementById("message_form");
+    const input = document.getElementById("message");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit("chat message", input.value);
+        input.value = "";
+      }
+    });
+
+   
   </script>
 </html>
