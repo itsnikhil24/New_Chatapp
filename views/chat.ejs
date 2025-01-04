@@ -3,7 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Chat Room</title>
+    <style>
+      .chatarea {
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+        border: 1px solid #ccc;
+        padding: 10px;
+        overflow-y: auto;
+      }
+      .chats {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .chats div {
+        margin-bottom: 10px;
+        padding: 5px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+      }
+      #message_form {
+        display: flex;
+        gap: 5px;
+      }
+      #message_form input[type="text"] {
+        flex: 1;
+      }
+    </style>
   </head>
   <body>
     <div class="left-div">
@@ -12,34 +39,74 @@
       <a href="#chat">Chat</a>
       <a href="#profile">Profile</a>
     </div>
+
     <div class="right-div">
-      <h1>ChatApp</h1>
+      <h1>Chat Room</h1>
       <nav id="nav-bar">
-        <img src="" alt="" />
-        <h2>Name</h2>
+        <h2>ChatApp</h2>
       </nav>
       <div class="chatarea">
+        <!-- Chat Messages -->
+        <div class="chats" id="messages-div"></div>
+
+        <!-- Message Form -->
         <form id="message_form">
-          <input id="message" type="text" />
-          <input type="submit" value="Submit" />
+          <input
+            id="message"
+            type="text"
+            placeholder="Type your message..."
+            required
+          />
+          <input type="submit" value="Send" />
         </form>
       </div>
     </div>
+
+    <!-- Include Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      // Initialize Socket.IO
+      const socket = io();
+
+      // Room ID passed from server
+      const roomId = "<%= chatId %>";
+
+      // Join the specified room
+      socket.emit("joinRoom", roomId);
+      console.log("Joined room:", roomId);
+
+      // Handle incoming messages
+      socket.on("message", (msg) => {
+        console.log("Message received from server:", msg); // Check if this is logged
+        const messagesDiv = document.getElementById("messages-div");
+        if (!messagesDiv) {
+          console.error("Messages div not found!");
+          return;
+        }
+        const newMessage = document.createElement("div");
+        newMessage.textContent = msg;
+        messagesDiv.appendChild(newMessage);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      // Form submission handler
+      const form = document.getElementById("message_form");
+      const input = document.getElementById("message");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault(); // Prevent page reload
+
+        const messageContent = input.value.trim();
+        if (messageContent) {
+          // Emit the message to the server
+          socket.emit("chat message", {
+            chatId: roomId,
+            message: messageContent,
+          });
+          input.value = ""; // Clear the input field
+        }
+      });
+    </script>
   </body>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    const form = document.getElementById("message_form");
-    const input = document.getElementById("message");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (input.value) {
-        socket.emit("chat message", input.value);
-        input.value = "";
-      }
-    });
-
-   
-  </script>
 </html>

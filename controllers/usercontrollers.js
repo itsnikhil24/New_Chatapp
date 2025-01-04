@@ -23,7 +23,8 @@ exports.loginpage = (req, res) => {
   res.render("login.ejs");
 }
 exports.chatroom = (req, res) => {
-  res.render("chat.ejs");
+  const chatId = req.params.chatid;
+  res.render("chat.ejs",{ chatId });
 }
 exports.dashboard = async (req, res) => {
   const token = req.cookies.token;

@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
+const chatmodel = require("./models/chatmodel");
 require("dotenv").config();
 const upload = multer({ storage: multer.memoryStorage() }); // Memory storage for file uploads
 
@@ -39,7 +40,46 @@ app.use(express.static('public'))
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
+  socket.on("joinRoom", (chatId) => {
+    socket.join(chatId);
+    console.log(`User joined room: ${chatId}`);
+  });
+
+  socket.on("chat message", async ({ chatId, message, senderId }) => {
+    console.log("Received data:", { chatId, message, senderId });
+  
+    // Find the chat by chatId
+    const chat = await chatmodel.findById(chatId);
+  
+    if (!chat) {
+      console.error("Chat not found!");
+      return;
+    }
+  
+    // Create a new message object
+    const newMessage = {
+      sender: senderId,
+      message: message,
+    };
+  
+    // Push the new message to the messages array in the chat
+    chat.messages.push(newMessage);
+  
+    // Save the chat document
+    await chat.save();
+  
+    console.log(`Message saved to room ${chatId}: ${message}`);
+  
+    // Emit the message to the room
+    io.to(chatId).emit("message", message);
+  });
+  
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected:", socket.id);
+  });
 });
+
 
 
 server.listen(PORT, () => {
