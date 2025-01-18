@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken');
 const chatmodel = require('../models/chatmodel');
 
 
+
 exports.hello = function (req, res) {
   res.cookie("password", "123");
   res.render("register.ejs");
@@ -22,14 +23,18 @@ exports.registerpage = (req, res) => {
 exports.loginpage = (req, res) => {
   res.render("login.ejs");
 }
-exports.chatroom = (req, res) => {
+exports.chatroom = async(req, res) => {
   const chatId = req.params.chatid;
   const token = req.cookies.token;
   const decoded = jwt.verify(token, "secretKey"); // Verify the token
   const user = decoded.id;
   const id = decoded.id;
+  req.params.id=chatId;
+  
+  const chat =await loadchats(req);
+  // console.log(chat);
 
-  res.render("chat.ejs",{ chatId ,id});
+  res.render("chat.ejs",{ chatId ,id,chat});
 }
 exports.dashboard = async (req, res) => {
   const token = req.cookies.token;
@@ -199,6 +204,37 @@ exports.chat = async (req, res) => {
   }
 
 }
+
+async function loadchats(req){
+  const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).send("Unauthorized: No token provided");
+    }
+
+    const decoded = jwt.verify(token, "secretKey");
+    const userId = decoded.id;
+    const chatid_to_load=req.params.id;
+   
+    const chat=await chatmodel.findOne({_id:chatid_to_load});
+    const chat_participants=chat.participants;
+
+    const isParticipant= chat_participants.some(participant => participant.equals(userId));
+
+    if(isParticipant===true){
+      console.log("sahi");
+    }
+    else{
+      console.log("galat");
+    }
+
+    return chat;
+    
+
+
+}
+
+
+
 
 
 
