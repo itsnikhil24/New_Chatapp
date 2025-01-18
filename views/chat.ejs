@@ -69,8 +69,11 @@
       // Initialize Socket.IO
       const socket = io();
 
+
+
       // Room ID passed from server
       const roomId = "<%= chatId %>";
+      const loginedUser="<%= id %>";
 
       // Join the specified room
       socket.emit("joinRoom", roomId);
@@ -103,6 +106,7 @@
           socket.emit("chat message", {
             chatId: roomId,
             message: messageContent,
+            senderId:loginedUser
           });
           input.value = ""; // Clear the input field
         }

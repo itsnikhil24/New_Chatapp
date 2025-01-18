@@ -58,8 +58,8 @@ io.on("connection", (socket) => {
   
     // Create a new message object
     const newMessage = {
-      sender: senderId,
-      message: message,
+      senderId: senderId,
+      content: message,
     };
   
     // Push the new message to the messages array in the chat

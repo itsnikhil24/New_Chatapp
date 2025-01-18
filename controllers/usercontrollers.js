@@ -24,7 +24,12 @@ exports.loginpage = (req, res) => {
 }
 exports.chatroom = (req, res) => {
   const chatId = req.params.chatid;
-  res.render("chat.ejs",{ chatId });
+  const token = req.cookies.token;
+  const decoded = jwt.verify(token, "secretKey"); // Verify the token
+  const user = decoded.id;
+  const id = decoded.id;
+
+  res.render("chat.ejs",{ chatId ,id});
 }
 exports.dashboard = async (req, res) => {
   const token = req.cookies.token;
@@ -194,4 +199,6 @@ exports.chat = async (req, res) => {
   }
 
 }
+
+
 
