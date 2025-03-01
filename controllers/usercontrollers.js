@@ -44,9 +44,20 @@ exports.dashboard = async (req, res) => {
   console.log(user);
   console.log(username);
 
-  const chats = await chatmodel.find({ senderId: user }).populate();
-  console.log(chats);
-  res.render("dashboard.ejs", chats); // Render dashboard
+  const chats = await chatmodel.find({ participants: user }).populate("participants", "username profile_pic");
+  // console.log(chats);
+  const users = [];
+  chats.forEach(chat => {
+      chat.participants.forEach(user => {
+          if (user._id.toString() !== user.toString()) {
+              users.push(user);
+          }
+      });
+  });
+
+  console.log(users);
+
+  res.render("dashboard", { users: [...new Map(users.map(u => [u._id, u])).values()] });
 
 }
 

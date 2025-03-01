@@ -147,9 +147,17 @@
   cursor: pointer;
   transition: background-color 0.2s;
 }
+.chatlist li span {
+  color: #ddd;
+}
+
+.chatlist li:hover span {
+  color: #2b2b2b; /* Ensure text color is visible on hover */
+}
 
 .chatlist li:hover {
   background-color: #f0f0f0; /* Highlight on hover */
+  color: #2b2b2b;
 }
 
 .profile-pic {
@@ -179,19 +187,16 @@
       </div>
     </div>
     <div class="rightcontainer">
-      <div class="navbar">Heading</div>
+      <div class="navbar">ChatRoom</div>
       <div class="content">
         <div class="chatlist">
           <ul>
-            <li>
-              <img src="path_to_profile_pic.jpg" alt="User Profile" class="profile-pic" />
-              <span class="username">John Doe</span>
-            </li>
-            <li>
-              <img src="path_to_profile_pic.jpg" alt="User Profile" class="profile-pic" />
-              <span class="username">Jane Smith</span>
-            </li>
-            <!-- Add more list items as needed -->
+            <% users.forEach(user => { %>
+              <li>
+                <img src="<%= user.profile_pic || 'default_profile_pic.jpg' %>" alt="User Profile" class="profile-pic" />
+                <span class="username"><%= user.username %></span>
+              </li>
+            <% }) %>
           </ul>
         </div>
         <div class="chats-box-right">
