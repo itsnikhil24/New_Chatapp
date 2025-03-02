@@ -1,9 +1,10 @@
 const express = require("express");
+require("dotenv").config();
 const { Server } = require("socket.io");
 const http = require("http");
 const app = express();
 const server = http.createServer(app);
-const PORT = 3000;
+const Port = process.env.PORT || 3000; // Default to 3000 if PORT is not set
 
 // Dependencies
 const io = new Server(server);
@@ -86,8 +87,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Server running on Port ${PORT}`);
+server.listen(Port, () => {
+  console.log(`Server running on Port ${Port}`);
 });
 
-module.exports=server;
