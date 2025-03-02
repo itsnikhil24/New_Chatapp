@@ -13,7 +13,6 @@ exports.hello = function (req, res) {
 }
 
 exports.checkcookie = (req, res) => {
-  console.log(req.cookies);
   res.json(req.cookies);
 }
 
@@ -23,48 +22,70 @@ exports.registerpage = (req, res) => {
 exports.loginpage = (req, res) => {
   res.render("login.ejs");
 }
-exports.chatroom = async(req, res) => {
-  const chatId = req.params.chatid;
-  const token = req.cookies.token;
-  const decoded = jwt.verify(token, "secretKey"); // Verify the token
-  const user = decoded.id;
-  const id = decoded.id;
-  req.params.id=chatId;
-  
-  const chat =await loadchats(req);
-  // console.log(chat);
+exports.chatroom = async (req, res) => {
+  try {
+    const chatId = req.params.chatid;
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, "secretKey"); // Verify the token
+    const userId = decoded.id;
+    
+    req.params.id = chatId;
+    const chat = await loadchats(req);
 
-  res.render("chat.ejs",{ chatId ,id,chat});
-}
+    // Find the recipient (the user being chatted with)
+    const recipientId = chat.participants.find(id => id != userId); // Get the other user
+    const recipient = await user.findById(recipientId).select("name profile_pic");
+
+    res.render("chat.ejs", { 
+      chatId, 
+      id: userId, 
+      chat, 
+      recipient // Pass recipient data to EJS
+    });
+
+  } catch (error) {
+    console.error("Error loading chat:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 exports.dashboard = async (req, res) => {
-  const token = req.cookies.token;
-  const decoded = jwt.verify(token, "secretKey"); // Verify the token
-  const user = decoded.id;
-  const username = decoded.username;
-  console.log(user);
-  console.log(username);
+  try {
+    const token = req.cookies.token;
+    const decoded = jwt.verify(token, "secretKey"); // Verify token
+    const userId = decoded.id;
 
-  const chats = await chatmodel.find({ participants: user }).populate("participants", "username profile_pic");
-  // console.log(chats);
-  const users = [];
-  chats.forEach(chat => {
-      chat.participants.forEach(user => {
-          if (user._id.toString() !== user.toString()) {
-              users.push(user);
-          }
+    // Fetch chats where user is a participant
+    const chats = await chatmodel
+      .find({ participants: userId })
+      .populate("participants", "name profile_pic");
+
+    // Extract the list of chat participants (excluding the logged-in user)
+    const users = [];
+    chats.forEach(chat => {
+      chat.participants.forEach(participant => {
+        if (participant._id.toString() !== userId) {
+          users.push({
+            _id: participant._id,
+            name: participant.name,
+            profile_pic: participant.profile_pic
+          });
+        }
       });
-  });
+    });
 
-  console.log(users);
+    // console.log(users);
 
-  res.render("dashboard", { users: [...new Map(users.map(u => [u._id, u])).values()] });
+    res.render("dashboard", { chats, users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+};
 
-}
 
 exports.createUser = async (req, res) => {
   try {
-    console.log("Request body:", req.body); // Log form data
-    console.log("Uploaded file:", req.file); // Log uploaded file details
+
 
     const { name, username, phone_number, password } = req.body;
 
@@ -135,7 +156,7 @@ exports.login = async (req, res) => {
     }
 
 
-    const token = jwt.sign({ username: userfind.username, id: userfind._id }, "secretKey", { expiresIn: "1h" });
+    const token = jwt.sign({ username: userfind.username, id: userfind._id }, "secretKey");
 
 
     res.cookie("token", token, { httpOnly: true, secure: true, maxAge: 3600000 }); // Secure cookies are recommended in production
@@ -195,12 +216,15 @@ exports.chat = async (req, res) => {
     let chat = await chatmodel.findOne({
       participants: { $all: [senderId, receiverId] }
     });
+
+    
     if (!chat) {
       chat = new chatmodel({
         participants: [senderId, receiverId],
         messages: [],
       });
       await chat.save();
+     
     }
     res.redirect(`/chatroom/${chat._id}`);
 
@@ -232,10 +256,10 @@ async function loadchats(req){
     const isParticipant= chat_participants.some(participant => participant.equals(userId));
 
     if(isParticipant===true){
-      console.log("sahi");
+    
     }
     else{
-      console.log("galat");
+    
     }
 
     return chat;

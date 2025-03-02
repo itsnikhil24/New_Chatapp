@@ -111,7 +111,7 @@
   background-color: #3a3a3a;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  visibility: hidden;
+  
 }
 
 .details {
@@ -130,6 +130,10 @@
   background-color: #3a3a3a;
   color: #e0e0e0;
 }
+.chatlist a {
+  text-decoration: none;
+}
+
 
 
 
@@ -137,6 +141,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+ 
 }
 
 .chatlist li {
@@ -146,18 +151,23 @@
   border-bottom: 1px solid #ddd;
   cursor: pointer;
   transition: background-color 0.2s;
+ 
+  
 }
 .chatlist li span {
   color: #ddd;
+ 
 }
 
 .chatlist li:hover span {
   color: #2b2b2b; /* Ensure text color is visible on hover */
+
 }
 
 .chatlist li:hover {
   background-color: #f0f0f0; /* Highlight on hover */
   color: #2b2b2b;
+  
 }
 
 .profile-pic {
@@ -173,6 +183,50 @@
   color: #333;
   font-weight: 500;
 }
+.chats-box-right {
+    width: 300px;
+    background: #1f1f1f;
+    color: white;
+    padding: 15px;
+    border-left: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.chat-welcome {
+    text-align: center;
+    background: #282828;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.chat-suggestions h3,
+.chat-emoji-box h3 {
+    color: #00aaff;
+    margin-bottom: 5px;
+}
+
+.chat-suggestions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.chat-suggestions li {
+    padding: 5px 0;
+    font-size: 14px;
+}
+
+.chat-emoji-box {
+    text-align: center;
+    background: #222;
+    padding: 10px;
+    border-radius: 10px;
+}
+.sidebar a{
+  text-decoration: none;
+}
+
   </style>
   <body>
     <div class="leftcontainer">
@@ -180,10 +234,9 @@
         <div class="menu">
           <a href="#home">Home</a>
           <a href="/explore">Explore</a>
-          <a href="#chat">Chat</a>
           <a href="#profile">Profile</a>
         </div>
-        <div class="logout">Logout</div>
+        <a href="/logout"><div class="logout">Logout</div></a>
       </div>
     </div>
     <div class="rightcontainer">
@@ -192,17 +245,36 @@
         <div class="chatlist">
           <ul>
             <% users.forEach(user => { %>
-              <li>
+              <a href="/chat/<%=user._id%>"><li class="chat-item" data-user-id="<%= user._id %>" data-username="<%= user.username %>" data-profile="<%= user.profile_pic %>">
                 <img src="<%= user.profile_pic || 'default_profile_pic.jpg' %>" alt="User Profile" class="profile-pic" />
-                <span class="username"><%= user.username %></span>
+                <span class="username"><%= user.name %></span>
               </li>
+            </a>
             <% }) %>
           </ul>
         </div>
         <div class="chats-box-right">
-          <div class="details">details like profile pic and name</div>
-          <div class="chats">Chats</div>
-        </div>
+          <div class="chat-welcome">
+              <h2>Welcome to ChatApp! 🚀</h2>
+              <p>Connect instantly with your friends. Enjoy seamless conversations in real-time.</p>
+          </div>
+      
+          <div class="chat-suggestions">
+              <h3>🔥 Upcoming Features</h3>
+              <ul>
+                  <li>📌 Pin important messages</li>
+                  <li>🎭 Use GIFs & Stickers</li>
+                  <li>🔕 Mute notifications</li>
+                  <li>💬 Start a new chat</li>
+              </ul>
+          </div>
+      
+          <div class="chat-emoji-box">
+              <h3>😊 Express Yourself</h3>
+              <p>Try sending: 🎉 ❤️ 😂 🤩</p>
+          </div>
+      </div>
+      
       </div>
     </div>
   </body>

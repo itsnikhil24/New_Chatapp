@@ -3,92 +3,122 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Dark Theme - Explore</title>
   </head>
   <style>
-    /* Container for all users */
+    /* Dark theme styles */
+    body {
+      background-color: #121212; /* Dark background */
+      color: #ffffff; /* Light text */
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header styling */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 20px;
+      background-color: #1e1e1e; /* Darker background for header */
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
     }
-    .header input {
-      align-items: center;
-      height: 2rem;
-      width: auto;
-    }
+
     #main-heading {
-      text-align: left;
+      margin: 0;
+      font-size: 1.8rem;
     }
+
+    /* Search box styling */
+    .search-box input {
+      height: 2rem;
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 5px;
+      background-color: #333;
+      color: #ffffff;
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: #bbb;
+    }
+
+    /* Container for all users */
     .allusercontainer {
       display: grid;
-      grid-template-columns: repeat(
-        auto-fit,
-        minmax(250px, 1fr)
-      ); /* Responsive grid */
-      gap: 20px; /* Space between user cards */
-      padding: 20px; /* Add padding around the container */
-      background-color: #f5f5f5; /* Light background for the container */
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+      gap: 20px;
+      padding: 20px;
+      background-color: #181818; /* Dark background for the container */
     }
 
     /* Single user card */
     .user {
       display: flex;
-      align-items: center; /* Align items vertically */
-      background-color: #ffffff; /* White background for contrast */
-      border: 1px solid #ddd; /* Subtle border */
-      border-radius: 10px; /* Rounded corners */
-      padding: 15px; /* Space inside each card */
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-      transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+      align-items: center;
+      background-color: #222; /* Dark card background */
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+      transition: transform 0.2s ease-in-out;
     }
 
-    /* Hover effect for user card */
+    /* Hover effect */
     .user:hover {
-      transform: translateY(-5px); /* Slight lift on hover */
+      transform: translateY(-5px);
     }
 
     /* Profile picture styling */
     .user img {
-      width: 60px; /* Fixed size for profile picture */
+      width: 60px;
       height: 60px;
-      border-radius: 50%; /* Circular image */
-      object-fit: cover; /* Prevent distortion */
-      margin-right: 15px; /* Space between image and text */
-      border: 2px solid #4caf50; /* Highlight border for the profile picture */
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 2px solid #4caf50; /* Green border */
     }
 
     /* User name styling */
     .user h2 {
-      font-size: 1.2rem; /* Slightly larger font */
-      color: #333; /* Dark text color */
-      margin: 0; /* Remove default margin */
-      font-weight: 600; /* Bold text */
+      font-size: 1.2rem;
+      color: #ffffff;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .user h3 {
+      font-size: 1rem;
+      color: #bbb; /* Light gray for secondary text */
+      margin: 0;
     }
 
     /* Chat Now button styling */
     .user a {
-      margin-left: auto; /* Push the button to the right */
-      background-color: #4caf50; /* Green background */
-      color: #fff; /* White text color */
-      border: none; /* Remove border */
-      padding: 10px 20px; /* Button padding */
-      border-radius: 5px; /* Rounded corners for button */
-      font-size: 0.9rem; /* Font size */
-      cursor: pointer; /* Pointer cursor on hover */
-      transition: background-color 0.3s ease; /* Smooth color transition */
+      margin-left: auto;
+      background-color: #4caf50;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
     }
 
     .user a button {
       background-color: transparent;
       border: none;
       font-size: 0.9rem;
-      color: #fff; /* White text color */
+      color: #ffffff;
     }
 
-    /* Hover effect for button */
+    /* Button hover effect */
     .user a:hover {
-      background-color: #45a049; /* Darker green on hover */
+      background-color: #45a049;
     }
   </style>
   <body>
@@ -97,55 +127,37 @@
       <div class="search-box">
         <input
           type="text"
-          placeholder="&#128269; Search profiles..."
+          placeholder="🔍 Search profiles..."
           id="searchInput"
         />
       </div>
     </div>
+
     <div class="allusercontainer">
       <% users.forEach(function(user){ %>
-
       <div class="user">
-        <img src="<%=user.profile_pic[0] %>" alt="user profile" />
-        <h2><%= user.username %></h2>
-        <h3>(<%= user.name %>)</h3>
-        <a href="/chat/<%=user._id%>"><button>Chat Now</button></a>
+        <img src="<%= user.profile_pic[0] %>" alt="user profile" />
+        <div>
+          <h2><%= user.username %></h2>
+          <h3>(<%= user.name %>)</h3>
+        </div>
+        <a href="/chat/<%= user._id %>"><button>Chat Now</button></a>
       </div>
-
       <% }) %>
     </div>
+
     <script>
       const inputbar = document.querySelector("#searchInput");
 
-
       inputbar.addEventListener("keyup", () => {
-        let inputvalue = document.getElementById("searchInput").value;
-        lowered_inputvalue = inputvalue.toLowerCase();
+        let inputvalue = inputbar.value.trim().toLowerCase();
+        let users = document.getElementsByClassName("user");
 
-        let x = document.getElementsByClassName("user");
-
-        for (let i = 0; i < x.length; i++) {
-          let userCard = x[i];
-          let name = userCard.querySelector("h2");
-          let lowername = name.innerHTML.toLowerCase(); // Convert name to lowercase
-          let lowered_inputvalue = inputvalue.trim().toLowerCase(); // Convert input value to lowercase
-
-          // If input is empty, display all user cards
-          if (lowered_inputvalue === "") {
-            userCard.style.display = "flex";
-          }
-          // If the name contains the input value (partial match), display the card
-          else if (lowername.includes(lowered_inputvalue)) {
-            userCard.style.display = "flex";
-          }
-          // If the name does not match, hide the card
-          else {
-            userCard.style.display = "none";
-          }
+        for (let user of users) {
+          let name = user.querySelector("h2").innerText.toLowerCase();
+          user.style.display = name.includes(inputvalue) ? "flex" : "none";
         }
-      }
-    
-    );
+      });
     </script>
   </body>
 </html>

@@ -1,193 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Room</title>
-    <style>
-      .chatarea {
-        display: flex;
-        flex-direction: column;
-        height: 80vh;
-        border: 1px solid #ccc;
-        padding: 10px;
-        overflow-y: auto;
-      }
-      .chats {
-        flex: 1;
-        overflow-y: auto;
-      }
-      .chats div {
-        margin-bottom: 10px;
-        padding: 5px;
-        background-color: #f0f0f0;
-        border-radius: 5px;
-      }
-      #message_form {
-        display: flex;
-        gap: 5px;
-      }
-      #message_form input[type="text"] {
-        flex: 1;
-      }
-      .chatarea {
-    display: flex;
-    flex-direction: column;
-    height: 80vh;
-    border: 1px solid #ccc;
-    padding: 10px;
-    overflow-y: auto;
-  }
-  .chats {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .chats .leftdiv {
-    align-self: flex-start;
-    background-color: #f0f0f0;
-    color: #000;
-    padding: 8px;
-    border-radius: 10px;
-    max-width: 60%;
-    word-wrap: break-word;
-  }
-  .chats .rightdiv {
-    align-self: flex-end;
-    background-color: #007bff;
-    color: #fff;
-    padding: 8px;
-    border-radius: 10px;
-    max-width: 60%;
-    word-wrap: break-word;
-  }
-  #message_form {
-    display: flex;
-    gap: 5px;
-  }
-  #message_form input[type="text"] {
-    flex: 1;
-  }
+    <link rel="stylesheet" href="/styles/chat.css">
+</head>
+<style>
+  /* General Reset */
+  body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      display: flex;
       
-    </style>
-  </head>
-  <body>
-    <div class="left-div">
-      <a href="/dashboard">Home</a>
-      <a href="/explore">Explore</a>
-      <a href="/profile">Profile</a>
-    </div>
+  }
+  
+  /* Main Layout */
+  .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+      max-width: 1200px;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+      width: 250px;
+      background: #1f1f1f;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+  
+  .sidebar h2 {
+      margin-bottom: 20px;
+      color: #00aaff;
+  }
+  
+  .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+  }
+  
+  .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 5px;
+      transition: 0.3s;
+      background: #282828;
+      text-align: center;
+  }
+  
+  .sidebar a:hover {
+      background: #00aaff;
+  }
+  
+  /* Chat Container */
+  .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding-left: 20px;
+      background: #181818;
+  }
+  
+  .chat-container h1 {
+      text-align: center;
+      color: #00aaff;
+  }
+  
+  /* Chat Messages */
+  .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      background: #222;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+  }
+  
+  .leftdiv, .rightdiv {
+      max-width: 60%;
+      padding: 10px;
+      border-radius: 10px;
+      word-wrap: break-word;
+  }
+  
+  .leftdiv {
+      align-self: flex-start;
+      background: #333;
+      color: white;
+  }
+  
+  .rightdiv {
+      align-self: flex-end;
+      background: #00aaff;
+      color: white;
+  }
+  
+  /* Message Input */
+  #message_form {
+      display: flex;
+      padding: 10px;
+      background: #222;
+      border-top: 1px solid #333;
+      border-radius: 0 0 10px 10px;
+  }
+  
+  #message {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background: #181818;
+      color: white;
+  }
+  
+  #message:focus {
+      outline: none;
+      border-color: #00aaff;
+  }
+  
+  button {
+      margin-left: 10px;
+      padding: 10px 15px;
+      border: none;
+      background: #00aaff;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+  }
+  
+  button:hover {
+      background: #0088cc;
+  }
+  .chat-header {
+    display: flex;
+    align-items: center;
+    background: #222;
+    padding: 10px;
+    border-bottom: 1px solid #333;
+}
 
-    <div class="right-div">
-      <h1>Chat Room</h1>
-      <nav id="nav-bar">
-        <h2>ChatApp</h2>
-      </nav>
-      <div class="chatarea">
-        <!-- Chat Messages -->
-        <div class="chats" id="messages-div">
-     
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit:cover;
+}
+
+</style>
+<body>
+
+    <!-- Sidebar -->
+    <div class="container">
+        <div class="sidebar">
+            <h2>ChatApp</h2>
+            <nav>
+                <a href="/dashboard">🏠 Home</a>
+                <a href="/explore">🔍 Explore</a>
+                <a href="/profile">👤 Profile</a>
+            </nav>
         </div>
+<!-- Chat Header with Recipient Details -->
 
-        <!-- Message Form -->
-        <form id="message_form">
-          <input
-            id="message"
-            type="text"
-            placeholder="Type your message..."
-            required
-          />
-          <input type="submit" value="Send" />
-        </form>
-      </div>
+
+        <!-- Chat Section -->
+        <div class="chat-container">
+            <h1>Chat Room</h1>
+            <div class="chat-header">
+              <img src="<%= recipient.profile_pic %>" alt="Profile Picture" class="profile-pic">
+              <h2><%= recipient.name %></h2>
+            </div>
+            <div class="chat-area" id="messages-div">
+              <% chat.messages.forEach((message) => { %>
+                  <% if (message.senderId == id) { %>
+                      <div class="rightdiv"><%= message.content %></div>
+                  <% } else { %>
+                      <div class="leftdiv"><%= message.content %></div>
+                  <% } %>
+              <% }) %>
+          </div>
+          
+
+            <!-- Message Input -->
+            <form id="message_form">
+                <input id="message" type="text" placeholder="Type your message..." required />
+                <button type="submit">Send</button>
+            </form>
+        </div>
     </div>
 
     <!-- Include Socket.IO -->
     <script src="/socket.io/socket.io.js"></script>
-
     <script>
       // Initialize Socket.IO
       const socket = io();
 
-      // Room ID passed from server
+      // Room ID and User ID from EJS
       const roomId = "<%= chatId %>";
       const loginedUser = "<%= id %>";
-      const chat = JSON.parse('<%- JSON.stringify(chat) %>');
-     const previous_messages=chat.messages;
-    //  console.log(previous_messages);
 
-    previous_messages.forEach((element) => {
-  const messagesDiv = document.getElementById("messages-div");
-  const messageDiv = document.createElement("div");
-
-  if (element.senderId == loginedUser) {
-    messageDiv.className = "rightdiv";
-  } else {
-    messageDiv.className = "leftdiv";
-  }
-
-  messageDiv.textContent = element.content;
-  messagesDiv.appendChild(messageDiv);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
-});
-
-
-      // Join the specified room
       socket.emit("joinRoom", roomId);
       console.log("Joined room:", roomId);
 
- // Handle incoming messages
-// Handle incoming messages
-socket.on("message", (msg) => {
-  console.log("Message received from server:", msg); // Check the format of msg
-  console.log("Logged-in user ID:", loginedUser); // Debugging log
+      // Handle incoming messages
+      socket.on("message", (msg) => {
+    console.log("New message:", msg);
 
-  const messagesDiv = document.getElementById("messages-div");
-  if (!messagesDiv) {
-    console.error("Messages div not found!");
-    return;
-  }
+    const messagesDiv = document.getElementById("messages-div");
+    const newMessage = document.createElement("div");
 
-  const newMessage = document.createElement("div");
+    if (msg.senderId == loginedUser) {
+        newMessage.className = "rightdiv";
+    } else {
+        newMessage.className = "leftdiv";
+    }
 
-  // Apply the correct class based on the sender
-  if (msg.senderId == loginedUser) {
-    newMessage.className = "rightdiv";
-  } else {
-    newMessage.className = "leftdiv";
-  }
-
-  newMessage.textContent = msg.content; // Use msg.content instead of msg
-  messagesDiv.appendChild(newMessage);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    newMessage.textContent = msg.content;
+    messagesDiv.appendChild(newMessage);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 });
 
 
+      // Handle message sending
+      document.getElementById("message_form").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const input = document.getElementById("message");
 
-      // Form submission handler
-      const form = document.getElementById("message_form");
-      const input = document.getElementById("message");
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault(); // Prevent page reload
-
-        const messageContent = input.value.trim();
-        if (messageContent) {
-          // Emit the message to the server
-          socket.emit("chat message", {
-            chatId: roomId,
-            message: messageContent,
-            senderId: loginedUser,
-          });
-          input.value = ""; // Clear the input field
-        }
+          if (input.value.trim()) {
+              socket.emit("chat message", {
+                  chatId: roomId,
+                  message: input.value,
+                  senderId: loginedUser,
+              });
+              input.value = "";
+          }
       });
-
-      // window.onload = function loadchats(chat) {
-      //   console.log(chat);
-      // };
     </script>
-  </body>
+</body>
 </html>
